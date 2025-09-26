@@ -3,7 +3,7 @@ const multipart = require("parse-multipart-data");
 
 module.exports = async function (context, req) {
     try {
-        const storageConnectionString = process.env.AzureWebJobsStorage;
+        const storageConnectionString = process.env.STORAGE_CONNECTION_STRING;
         const containerName = "input-files";
 
         // แยกส่วนของ multipart/form-data

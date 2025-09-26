@@ -1,7 +1,7 @@
 const { WebPubSubServiceClient } = require("@azure/web-pubsub");
 
 module.exports = async function (context, req) {
-    const signalRConnectionString = process.env.AzureSignalRConnectionString;
+    const signalRConnectionString = process.env.SIGNALR_CONNECTION_STRING;
     const hubName = "summarizer";
 
     const { connectionId, downloadUrl } = req.body;
