@@ -15,6 +15,7 @@
       "type": "signalRConnectionInfo",
       "name": "connectionInfo",
       "hubName": "summarizer",
+      "connectionStringSetting": "SIGNALR_CONNECTION_STRING",  // <--- เพิ่มบรรทัดนี้
       "direction": "in"
     }
   ],
