@@ -4,10 +4,6 @@ const uploadButton = document.getElementById('uploadButton');
 const statusDiv = document.getElementById('status');
 const downloadLink = document.getElementById('downloadLink');
 
-// --- *** แก้ไขตรงนี้: ใส่ URL ของ Function App ของคุณ *** ---
-const functionAppUrl = "https://<YOUR_FUNCTION_APP_NAME>.azurewebsites.net"; 
-// 👆👆👆 แทนที่ <YOUR_FUNCTION_APP_NAME> ด้วยชื่อ Function App ของคุณ
-
 // --- ตัวแปรสำหรับเก็บข้อมูลการเชื่อมต่อ ---
 let connection;
 let connectionId;
@@ -15,8 +11,8 @@ let connectionId;
 // --- 1. ฟังก์ชันเริ่มต้นการเชื่อมต่อ SignalR ---
 async function initializeSignalR() {
     try {
-        // ติดต่อ API ที่ URL เต็ม เพื่อขอข้อมูลการเชื่อมต่อ
-        const negotiateResponse = await fetch(`${functionAppUrl}/api/negotiate`);
+        // *** ถูกต้องแล้ว: เรียก /api/negotiate โดยตรง ***
+        const negotiateResponse = await fetch('/api/negotiate');
         const connectionInfo = await negotiateResponse.json();
 
         // สร้างการเชื่อมต่อ SignalR
@@ -29,11 +25,8 @@ async function initializeSignalR() {
             console.log("Callback received from server:", data);
             statusDiv.innerText = '✅ Summary complete! Your download is ready.';
             
-            // ตั้งค่าลิงก์และแสดงปุ่มดาวน์โหลด
             downloadLink.href = data.url; 
             downloadLink.style.display = 'block'; 
-            
-            // เปิดให้ปุ่มอัปโหลดทำงานได้อีกครั้ง
             uploadButton.disabled = false;
         });
 
@@ -72,8 +65,8 @@ uploadButton.addEventListener('click', async () => {
         uploadButton.disabled = true;
         downloadLink.style.display = 'none';
 
-        // --- 3. ส่งไฟล์และ Connection ID ไปที่ API ที่ URL เต็ม ---
-        const uploadResponse = await fetch(`${functionAppUrl}/api/upload`, {
+        // *** ถูกต้องแล้ว: เรียก /api/upload โดยตรง ***
+        const uploadResponse = await fetch('/api/upload', {
             method: 'POST',
             body: formData
         });
