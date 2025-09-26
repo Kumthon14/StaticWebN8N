@@ -4,16 +4,19 @@
       "authLevel": "anonymous",
       "type": "httpTrigger",
       "direction": "in",
-      "name": "req",
-      "methods": [
-        "get",
-        "post"
-      ]
+      "name": "req"
     },
     {
       "type": "http",
       "direction": "out",
       "name": "res"
+    },
+    {
+      "type": "signalRConnectionInfo",
+      "name": "connectionInfo",
+      "hubName": "summarizer",
+      "direction": "in"
     }
-  ]
+  ],
+  "scriptFile": "index.js"
 }
