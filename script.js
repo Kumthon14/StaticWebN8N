@@ -4,6 +4,10 @@ const uploadButton = document.getElementById('uploadButton');
 const statusDiv = document.getElementById('status');
 const downloadLink = document.getElementById('downloadLink');
 
+// --- *** แก้ไขตรงนี้: ใส่ URL ของ Function App ของคุณ *** ---
+const functionAppUrl = "https://<YOUR_FUNCTION_APP_NAME>.azurewebsites.net"; 
+// 👆👆👆 แทนที่ <YOUR_FUNCTION_APP_NAME> ด้วยชื่อ Function App ของคุณ
+
 // --- ตัวแปรสำหรับเก็บข้อมูลการเชื่อมต่อ ---
 let connection;
 let connectionId;
@@ -11,8 +15,8 @@ let connectionId;
 // --- 1. ฟังก์ชันเริ่มต้นการเชื่อมต่อ SignalR ---
 async function initializeSignalR() {
     try {
-        // ติดต่อ API /api/negotiate เพื่อขอข้อมูลการเชื่อมต่อ
-        const negotiateResponse = await fetch('/api/negotiate');
+        // ติดต่อ API ที่ URL เต็ม เพื่อขอข้อมูลการเชื่อมต่อ
+        const negotiateResponse = await fetch(`${functionAppUrl}/api/negotiate`);
         const connectionInfo = await negotiateResponse.json();
 
         // สร้างการเชื่อมต่อ SignalR
@@ -21,7 +25,6 @@ async function initializeSignalR() {
             .build();
         
         // --- 4. ตั้งค่าการ "ดักฟัง" ข้อความจาก Server ---
-        // เมื่อ Server ส่งข้อความชื่อ 'summaryComplete' กลับมา ฟังก์ชันนี้จะทำงาน
         connection.on('summaryComplete', (data) => {
             console.log("Callback received from server:", data);
             statusDiv.innerText = '✅ Summary complete! Your download is ready.';
@@ -51,7 +54,6 @@ async function initializeSignalR() {
 uploadButton.addEventListener('click', async () => {
     const file = fileInput.files[0];
 
-    // ตรวจสอบข้อมูลเบื้องต้น
     if (!file) {
         alert("Please select a file first!");
         return;
@@ -61,19 +63,17 @@ uploadButton.addEventListener('click', async () => {
         return;
     }
 
-    // เตรียมข้อมูลที่จะส่งไปใน Request Body (แบบฟอร์ม)
     const formData = new FormData();
     formData.append('file', file);
     formData.append('connectionId', connectionId);
 
     try {
-        // อัปเดตสถานะและปิดปุ่มชั่วคราว
         statusDiv.innerText = 'Uploading file...';
         uploadButton.disabled = true;
         downloadLink.style.display = 'none';
 
-        // --- 3. ส่งไฟล์และ Connection ID ไปที่ API /api/upload ---
-        const uploadResponse = await fetch('/api/upload', {
+        // --- 3. ส่งไฟล์และ Connection ID ไปที่ API ที่ URL เต็ม ---
+        const uploadResponse = await fetch(`${functionAppUrl}/api/upload`, {
             method: 'POST',
             body: formData
         });
@@ -81,16 +81,15 @@ uploadButton.addEventListener('click', async () => {
         const result = await uploadResponse.json();
 
         if (uploadResponse.ok) {
-            statusDiv.innerText = `⏳ ${result.message}`; // แสดงข้อความ "Processing..." จาก Server
+            statusDiv.innerText = `⏳ ${result.message}`; 
         } else {
-            // หากมี Error จากฝั่ง Server
             throw new Error(result.message);
         }
 
     } catch (error) {
         console.error("Upload failed: ", error);
         statusDiv.innerText = `Upload Error: ${error.message}`;
-        uploadButton.disabled = false; // หากล้มเหลว ให้เปิดปุ่มกลับมา
+        uploadButton.disabled = false; 
     }
 });
 
